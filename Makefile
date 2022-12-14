@@ -11,31 +11,31 @@ endif
 
 INSTALL = install
 
-OBJS =	dev_table.o	\
-	i2c.o		\
-	init.o		\
-	main.o		\
-	port.o		\
-	serial_common.o	\
-	serial_platform.o	\
-	stm32.o		\
-	utils.o
+OBJS =	src/dev_table.o	\
+	src/i2c.o		\
+	src/init.o		\
+	src/main.o		\
+	src/port.o		\
+	src/serial_common.o	\
+	src/serial_platform.o	\
+	src/stm32.o		\
+	src/utils.o
 
-LIBOBJS = parsers/parsers.a
+LIBOBJS = src/parsers/parsers.a
 
 all: stm32flash
 
-serial_platform.o: serial_posix.c serial_w32.c
+src/parsers/parsers.a: force
+	cd src/parsers && $(MAKE) parsers.a
 
-parsers/parsers.a: force
-	cd parsers && $(MAKE) parsers.a
+src/serial_platform.o: src/serial_posix.c src/serial_w32.c
 
 stm32flash: $(OBJS) $(LIBOBJS)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBOBJS)
 
 clean:
 	rm -f $(OBJS) stm32flash
-	cd parsers && $(MAKE) $@
+	cd src/parsers && $(MAKE) $@
 
 install: all
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/bin
