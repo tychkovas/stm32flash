@@ -1,0 +1,98 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			// https://stackoverflow.com/questions/30269449/how-do-i-set-up-visual-studio-code-to-compile-c-code
+			"label": "Makefile:ARM:C/C++: arm-linux-gnueabihf-gcc 4.8.4 - build active file",
+			"type": "shell",
+			"command": "make",
+			"args": [
+				"CC=/usr/bin/arm-linux-gnueabihf-gcc",
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"detail": "compiler: /usr/bin/arm-linux-gnueabihf-gcc",
+
+			// Use the standard less compilation problem matcher.
+			"problemMatcher": {
+				"owner": "cpp",
+				"fileLocation": [
+					"absolute"
+				],
+				"pattern": {
+					"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+					"file": 1,
+					"line": 2,
+					"column": 3,
+					"severity": 4,
+					"message": 5
+				}
+			},
+		},
+		{
+			"label": "make: Sys Gcc - build active file",
+			"type": "shell",
+			"command": "make",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"detail": "компилятор: gcc",
+
+			// Use the standard less compilation problem matcher.
+			"problemMatcher": {
+				"owner": "cpp",
+				"fileLocation": [
+					"absolute"
+				],
+				"pattern": {
+					"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+					"file": 1,
+					"line": 2,
+					"column": 3,
+					"severity": 4,
+					"message": 5
+				}
+			}
+		},
+		{
+			"label": "clean",
+			"type": "shell",
+			"command": "make clean",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"detail": "clean All",
+
+			// Use the standard less compilation problem matcher.
+			"problemMatcher": {
+				"owner": "cpp",
+				"fileLocation": [
+					"absolute"
+				],
+				"pattern": {
+					"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+					"file": 1,
+					"line": 2,
+					"column": 3,
+					"severity": 4,
+					"message": 5
+				}
+			}
+		}
+	]
+}
