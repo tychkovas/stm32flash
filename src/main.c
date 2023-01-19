@@ -28,6 +28,9 @@
 #include <unistd.h>
 #include <string.h>
 #include <signal.h>
+#include <getopt.h>
+#include <bits/sigaction.h>
+#include <stdbool.h>
 
 #include "init.h"
 #include "utils.h"
@@ -44,6 +47,12 @@
 #endif
 
 #define VERSION "STM32loader_0.6.0"
+
+/* device defailt settings */
+#define DD_I2C_DEV "/dev/i2c-1"
+#define DD_I2C_ADDR 0x57
+#define DD_I2C_SUB_ADDR 0xF4
+#define DD_I2C_TRANSFER_DATA 0xA0, 0xCD, 0x12, 0xE9
 
 /* device globals */
 stm32_t *stm = NULL;
@@ -90,6 +99,9 @@ char *filename;
 char *gpio_seq = NULL;
 uint32_t start_addr = 0;
 uint32_t readwrite_len = 0;
+
+bool need_jump_into_bl = false;
+uint8_t bl_transfer_data[] = {DD_I2C_SUB_ADDR, DD_I2C_TRANSFER_DATA};
 
 /* functions */
 int parse_options(int argc, char *argv[]);
@@ -343,6 +355,22 @@ int main(int argc, char *argv[])
   }
 
   port->flush(port);
+
+  if (need_jump_into_bl)
+  {
+    port_err_t p_err;
+
+    printf(" Start jump to bootloader...");
+    p_err = port->write(port, bl_transfer_data, sizeof(bl_transfer_data));
+    if (p_err != PORT_ERR_OK)
+    {
+      fprintf(stderr, " Failed jump to bootloader.\n");
+      fprintf(stderr, " Close.\n");
+      goto close;
+    }
+
+    printf("Completed the jump process to the bootloader.\n");
+  }
 
   stm = stm32_init(port, init_flag);
   if (!stm)
@@ -747,10 +775,21 @@ int parse_options(int argc, char *argv[])
   int c;
   char *pLen;
 
-  while ((c = getopt(argc, argv, "a:b:m:r:w:e:vn:g:jkfcChuos:S:F:i:R")) != -1)
+  while ((c = getopt(argc, argv, "a:b:m:r:w:e:vn:g:jkfcChuos:S:F:i:R:DT")) != -1)
   {
     switch (c)
     {
+    case 'D':
+      port_opts.device = DD_I2C_DEV;
+      port_opts.bus_addr = DD_I2C_ADDR;
+      fprintf(stdout, " Set default option for VM14.\n");
+      break;
+
+    case 'T':
+      need_jump_into_bl = true;
+      fprintf(stdout, "Set the need to jump into the bootloader.\n");
+      break;
+
     case 'a':
       port_opts.bus_addr = strtoul(optarg, NULL, 0);
       break;
