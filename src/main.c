@@ -29,7 +29,6 @@
 #include <string.h>
 #include <signal.h>
 #include <getopt.h>
-#include <bits/sigaction.h>
 #include <stdbool.h>
 
 #include "init.h"
